@@ -1,0 +1,8 @@
+<h2>Lib two</h2>
+
+<ol>
+  <li *ngFor='let data of libTreeService.data | async; let i = index'>
+    {{data}}
+    <button (click)='libTreeService.remove(i)'>x</button>
+  </li>
+</ol>

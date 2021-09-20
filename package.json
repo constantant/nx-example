@@ -5,9 +5,11 @@
   "scripts": {
     "ng": "nx",
     "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main",
-    "start": "nx serve",
+    "app-one:start": "nx serve app-one",
+    "app-two:start": "nx serve app-two",
     "build": "nx build",
-    "test": "nx test"
+    "test": "nx test",
+    "graph": "nx dep-graph --watch"
   },
   "private": true,
   "dependencies": {

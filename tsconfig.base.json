@@ -14,7 +14,12 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@nx-example/lib-one": ["libs/lib-one/src/index.ts"],
+      "@nx-example/lib-tow": ["libs/lib-tow/src/index.ts"],
+      "@nx-example/lib-tree": ["libs/lib-tree/src/index.ts"],
+      "@nx-example/lib-two": ["libs/lib-two/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

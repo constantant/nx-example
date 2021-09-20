@@ -1,0 +1,9 @@
+<h2>Lib one</h2>
+
+<div>
+  <input #input>
+  <button (click)='libTreeService.add(input.value); input.value=""'>Add</button>
+</div>
+<ul>
+  <li *ngFor='let data of libTreeService.data | async'>{{data}}</li>
+</ul>
