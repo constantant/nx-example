@@ -9,9 +9,7 @@
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
-          "outputs": [
-            "{options.outputPath}"
-          ],
+          "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/app-one",
             "index": "apps/app-one/src/index.html",
@@ -23,9 +21,7 @@
               "apps/app-one/src/favicon.ico",
               "apps/app-one/src/assets"
             ],
-            "styles": [
-              "apps/app-one/src/styles.scss"
-            ],
+            "styles": ["apps/app-one/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -90,9 +86,7 @@
         },
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/apps/app-one"
-          ],
+          "outputs": ["coverage/apps/app-one"],
           "options": {
             "jestConfig": "apps/app-one/jest.config.js",
             "passWithNoTests": true
@@ -120,13 +114,9 @@
         },
         "lint": {
           "builder": "@nrwl/linter:eslint",
-          "outputs": [
-            "{options.outputFile}"
-          ],
+          "outputs": ["{options.outputFile}"],
           "options": {
-            "lintFilePatterns": [
-              "apps/app-one-e2e/**/*.{js,ts}"
-            ]
+            "lintFilePatterns": ["apps/app-one-e2e/**/*.{js,ts}"]
           }
         }
       }
@@ -139,9 +129,7 @@
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
-          "outputs": [
-            "{options.outputPath}"
-          ],
+          "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/app-two",
             "index": "apps/app-two/src/index.html",
@@ -153,9 +141,7 @@
               "apps/app-two/src/favicon.ico",
               "apps/app-two/src/assets"
             ],
-            "styles": [
-              "apps/app-two/src/styles.scss"
-            ],
+            "styles": ["apps/app-two/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -221,9 +207,7 @@
         },
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/apps/app-two"
-          ],
+          "outputs": ["coverage/apps/app-two"],
           "options": {
             "jestConfig": "apps/app-two/jest.config.js",
             "passWithNoTests": true
@@ -250,13 +234,9 @@
         },
         "lint": {
           "builder": "@nrwl/linter:eslint",
-          "outputs": [
-            "{options.outputFile}"
-          ],
+          "outputs": ["{options.outputFile}"],
           "options": {
-            "lintFilePatterns": [
-              "apps/app-two-e2e/**/*.{js,ts}"
-            ]
+            "lintFilePatterns": ["apps/app-two-e2e/**/*.{js,ts}"]
           }
         }
       }
@@ -269,9 +249,7 @@
       "architect": {
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/lib-one"
-          ],
+          "outputs": ["coverage/libs/lib-one"],
           "options": {
             "jestConfig": "libs/lib-one/jest.config.js",
             "passWithNoTests": true
@@ -285,6 +263,88 @@
               "libs/lib-one/src/**/*.html"
             ]
           }
+        },
+        "storybook": {
+          "builder": "@nrwl/storybook:storybook",
+          "options": {
+            "uiFramework": "@storybook/angular",
+            "port": 4400,
+            "config": {
+              "configFolder": "libs/lib-one/.storybook"
+            }
+          },
+          "configurations": {
+            "ci": {
+              "quiet": true
+            }
+          }
+        },
+        "build-storybook": {
+          "builder": "@nrwl/storybook:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "uiFramework": "@storybook/angular",
+            "outputPath": "dist/storybook/lib-one",
+            "config": {
+              "configFolder": "libs/lib-one/.storybook"
+            }
+          },
+          "configurations": {
+            "ci": {
+              "quiet": true
+            }
+          }
+        }
+      }
+    },
+    "lib-one-e2e": {
+      "root": "apps/lib-one-e2e",
+      "sourceRoot": "apps/lib-one-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/lib-one-e2e/cypress.json",
+            "devServerTarget": "lib-one:storybook"
+          },
+          "configurations": {
+            "ci": {
+              "devServerTarget": "lib-one:storybook:ci"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["apps/lib-one-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    },
+    "lib-tree": {
+      "projectType": "library",
+      "root": "libs/lib-tree",
+      "sourceRoot": "libs/lib-tree/src",
+      "prefix": "nx-example",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/lib-tree"],
+          "options": {
+            "jestConfig": "libs/lib-tree/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/lib-tree/src/**/*.ts",
+              "libs/lib-tree/src/**/*.html"
+            ]
+          }
         }
       }
     },
@@ -296,9 +356,7 @@
       "architect": {
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/lib-two"
-          ],
+          "outputs": ["coverage/libs/lib-two"],
           "options": {
             "jestConfig": "libs/lib-two/jest.config.js",
             "passWithNoTests": true
@@ -312,32 +370,62 @@
               "libs/lib-two/src/**/*.html"
             ]
           }
+        },
+        "storybook": {
+          "builder": "@nrwl/storybook:storybook",
+          "options": {
+            "uiFramework": "@storybook/angular",
+            "port": 4400,
+            "config": {
+              "configFolder": "libs/lib-two/.storybook"
+            }
+          },
+          "configurations": {
+            "ci": {
+              "quiet": true
+            }
+          }
+        },
+        "build-storybook": {
+          "builder": "@nrwl/storybook:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "uiFramework": "@storybook/angular",
+            "outputPath": "dist/storybook/lib-two",
+            "config": {
+              "configFolder": "libs/lib-two/.storybook"
+            }
+          },
+          "configurations": {
+            "ci": {
+              "quiet": true
+            }
+          }
         }
       }
     },
-    "lib-tree": {
-      "projectType": "library",
-      "root": "libs/lib-tree",
-      "sourceRoot": "libs/lib-tree/src",
-      "prefix": "nx-example",
+    "lib-two-e2e": {
+      "root": "apps/lib-two-e2e",
+      "sourceRoot": "apps/lib-two-e2e/src",
+      "projectType": "application",
       "architect": {
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/lib-tree"
-          ],
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
           "options": {
-            "jestConfig": "libs/lib-tree/jest.config.js",
-            "passWithNoTests": true
+            "cypressConfig": "apps/lib-two-e2e/cypress.json",
+            "devServerTarget": "lib-two:storybook"
+          },
+          "configurations": {
+            "ci": {
+              "devServerTarget": "lib-two:storybook:ci"
+            }
           }
         },
         "lint": {
           "builder": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
           "options": {
-            "lintFilePatterns": [
-              "libs/lib-tree/src/**/*.ts",
-              "libs/lib-tree/src/**/*.html"
-            ]
+            "lintFilePatterns": ["apps/lib-two-e2e/**/*.{js,ts}"]
           }
         }
       }

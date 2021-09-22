@@ -1,8 +1,16 @@
 <h2>Lib two</h2>
 
-<ol>
-  <li *ngFor='let data of libTreeService.data | async; let i = index'>
-    {{data}}
-    <button (click)='libTreeService.remove(i)'>x</button>
-  </li>
-</ol>
+<ng-container *ngIf='libTreeService.data | async as items'>
+  <ng-container *ngIf='items.length; else empty'>
+    <nx-example-item
+      *ngFor='let data of items; let i = index'
+      (delete)='libTreeService.remove(i)'
+    >
+      {{data}}
+    </nx-example-item>
+  </ng-container>
+</ng-container>
+
+<ng-template #empty>
+  <p>No data</p>
+</ng-template>
