@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@nx-example/http-mock": ["libs/http-mock/src/index.ts"],
       "@nx-example/lib-one": ["libs/lib-one/src/index.ts"],
       "@nx-example/lib-tow": ["libs/lib-tow/src/index.ts"],
       "@nx-example/lib-tree": ["libs/lib-tree/src/index.ts"],

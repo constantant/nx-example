@@ -1,28 +1,32 @@
-import { Inject, Injectable } from '@angular/core';
-import { DATA_SET } from './lib-tree.token';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+import { concat, Observable, ReplaySubject, Subject, of } from 'rxjs';
+import { shareReplay, switchMap, tap } from 'rxjs/operators';
 
 @Injectable()
 export class LibTreeService {
 
-  private store: BehaviorSubject<string[]> = new BehaviorSubject(this.dataSet);
-  data: Observable<string[]> = this.store.asObservable();
+  private trigger: Subject<void> = new Subject();
+  loading: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
+  data: Observable<string[]> = concat(of(void 0), this.trigger).pipe(
+    tap(() => this.loading.next(true)),
+    switchMap(() => this.httpClient.get<string[]>(`@lib-tree-api/items`)),
+    tap(() => this.loading.next(false)),
+    shareReplay(1)
+  );
 
-  constructor(@Inject(DATA_SET) private readonly dataSet: string[]) {}
+  constructor(private readonly httpClient: HttpClient) {}
 
-  add(data: string): void {
-    this.store.next([ ...this.store.getValue(), data ]);
+  add(data: string): Observable<unknown> {
+    return this.httpClient.post(`@lib-tree-api/items`, data).pipe(
+      tap(() => this.trigger.next())
+    );
   }
 
-  update(index: number, data: string): void {
-    const arr = this.store.getValue();
-    arr.splice(index, 1, data);
-    this.store.next(arr);
-  }
-
-  remove(index: number): void {
-    const arr = this.store.getValue();
-    arr.splice(index, 1);
-    this.store.next(arr);
+  remove(index: number): Observable<unknown> {
+    return this.httpClient.delete(`@lib-tree-api/items/${index}`).pipe(
+      tap(() => this.trigger.next())
+    );
   }
 }

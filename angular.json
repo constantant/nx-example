@@ -42,6 +42,10 @@
                 {
                   "replace": "apps/app-one/src/environments/environment.ts",
                   "with": "apps/app-one/src/environments/environment.prod.ts"
+                },
+                {
+                  "replace": "apps/app-one/src/data-sources/data-source.ts",
+                  "with": "apps/app-one/src/data-sources/data-source.prod.ts"
                 }
               ],
               "outputHashing": "all"
@@ -162,6 +166,10 @@
                 {
                   "replace": "apps/app-two/src/environments/environment.ts",
                   "with": "apps/app-two/src/environments/environment.prod.ts"
+                },
+                {
+                  "replace": "apps/app-two/src/data-sources/data-source.ts",
+                  "with": "apps/app-two/src/data-sources/data-source.prod.ts"
                 }
               ],
               "outputHashing": "all"
@@ -237,6 +245,31 @@
           "outputs": ["{options.outputFile}"],
           "options": {
             "lintFilePatterns": ["apps/app-two-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    },
+    "http-mock": {
+      "projectType": "library",
+      "root": "libs/http-mock",
+      "sourceRoot": "libs/http-mock/src",
+      "prefix": "nx-example",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/http-mock"],
+          "options": {
+            "jestConfig": "libs/http-mock/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/http-mock/src/**/*.ts",
+              "libs/http-mock/src/**/*.html"
+            ]
           }
         }
       }

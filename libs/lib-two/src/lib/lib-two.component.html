@@ -1,10 +1,11 @@
 <h2>Lib two</h2>
 
+<p *ngIf='libTreeService.loading | async'>Loading...</p>
 <ng-container *ngIf='libTreeService.data | async as items'>
   <ng-container *ngIf='items.length; else empty'>
     <nx-example-item
       *ngFor='let data of items; let i = index'
-      (delete)='libTreeService.remove(i)'
+      (delete)='remove(i)'
     >
       {{data}}
     </nx-example-item>

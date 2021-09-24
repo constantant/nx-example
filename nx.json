@@ -14,7 +14,12 @@
     "default": {
       "runner": "@nrwl/nx-cloud",
       "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"],
+        "cacheableOperations": [
+          "build",
+          "lint",
+          "test",
+          "e2e"
+        ],
         "accessToken": "ZWJjN2Y2ZWYtZWUzNy00NTZiLTk5NDYtOGU1NGI5NGE4MTU0fHJlYWQtd3JpdGU="
       }
     }
@@ -33,31 +38,50 @@
     },
     "app-one-e2e": {
       "tags": [],
-      "implicitDependencies": ["app-one"]
+      "implicitDependencies": [
+        "app-one"
+      ]
     },
     "app-two": {
       "tags": []
     },
     "app-two-e2e": {
       "tags": [],
-      "implicitDependencies": ["app-two"]
+      "implicitDependencies": [
+        "app-two"
+      ]
+    },
+    "http-mock": {
+      "tags": [
+        "dev"
+      ]
     },
     "lib-one": {
-      "tags": ["feature"]
+      "tags": [
+        "feature"
+      ]
     },
     "lib-one-e2e": {
       "tags": [],
-      "implicitDependencies": ["lib-one"]
+      "implicitDependencies": [
+        "lib-one"
+      ]
     },
     "lib-tree": {
-      "tags": ["util"]
+      "tags": [
+        "util"
+      ]
     },
     "lib-two": {
-      "tags": ["feature"]
+      "tags": [
+        "feature"
+      ]
     },
     "lib-two-e2e": {
       "tags": [],
-      "implicitDependencies": ["lib-two"]
+      "implicitDependencies": [
+        "lib-two"
+      ]
     }
   }
 }

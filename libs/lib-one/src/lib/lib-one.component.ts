@@ -8,4 +8,8 @@ import { LibTreeService } from '@nx-example/lib-tree';
 })
 export class LibOneComponent {
   constructor(public readonly libTreeService: LibTreeService) {}
+
+  add(value: string): void {
+    this.libTreeService.add(value).subscribe();
+  }
 }

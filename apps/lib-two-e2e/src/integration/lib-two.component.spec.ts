@@ -9,5 +9,6 @@ describe('lib-two', () => {
   it('should delete an item', () => {
     cy.get('nx-example-lib-two nx-example-item').first().children('button').first().click();
     cy.get('nx-example-lib-two').children('nx-example-item').should('have.length', 1);
+    cy.window()
   });
 });
