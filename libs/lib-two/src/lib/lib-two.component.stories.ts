@@ -1,45 +1,59 @@
-import { moduleMetadata, Story, Meta } from '@storybook/angular';
+import { HttpRequest } from '@angular/common/http';
+import { Story, Meta } from '@storybook/angular';
+
+import { Subject, throwError } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
+import { HTTP_MOCK_OUTSIDE_IN, HTTP_MOCK_OUTSIDE_OUT, HttpMockCatcher, HttpMockModule } from '@nx-example/http-mock';
+import { LibTreeMockModule } from '@nx-example/lib-tree';
 import { LibTwoComponent } from './lib-two.component';
-import { ItemComponent } from './item/item.component';
-import { HttpEvent, HttpRequest, HttpResponse } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { HttpMockModule, HttpMockResponse } from '@nx-example/http-mock';
 import { LibTwoModule } from './lib-two.module';
 
-const getResponse = (m: string, body: unknown) => ({
-  match({ method }: HttpRequest<unknown>): boolean {
-    return method === m;
-  },
-  response(): Observable<HttpEvent<unknown>> {
-    return of(new HttpResponse({ body }));
-  }
-});
-const items = [ 'hello', 'world' ];
-const responses: HttpMockResponse[] = [
-  getResponse('GET', items),
-  getResponse('POST', items),
-  getResponse('GET', [ ...items, ...items ])
-];
+const httpMockOutsideIn = new Subject<HttpRequest<unknown>>();
+const httpMockOutsideOut = httpMockOutsideIn.pipe(
+  switchMap((req: HttpRequest<unknown>) => {
+    let httpMockCatcher;
+    if ((httpMockCatcher = (window as HttpMockCatcher)?.httpMockCatcher)) {
+      return httpMockCatcher(req);
+    }
+    return throwError(`Http Mock Catcher for ${req.method} ${req.url} was not set`);
+  })
+);
 
 export default {
   title: 'LibTwoComponent',
-  component: LibTwoComponent,
-  decorators: [
-    moduleMetadata({
-      declarations: [ ItemComponent ],
-      imports: [
-        HttpMockModule.forRoot({ responses, removeUsed: true }),
-        LibTwoModule.forRoot()
-      ]
-    })
-  ]
+  component: LibTwoComponent
 } as Meta<LibTwoComponent>;
 
-const TreeService: Story<{ dataSet: string[] }> = ({ dataSet }: { dataSet: string[] }) => {
-  // items = dataSet;
-  return {};
-};
+const DefaultMockSource: Story = () => ({
+  moduleMetadata: {
+    imports: [
+      HttpMockModule.forRoot(),
+      LibTreeMockModule.forRoot(),
+      LibTwoModule.forRoot()
+    ]
+  }
+});
 
+const EndToEndMockSource: Story = () => ({
+  moduleMetadata: {
+    imports: [
+      HttpMockModule.forRoot(),
+      LibTwoModule.forRoot()
+    ],
+    providers: [
+      {
+        provide: HTTP_MOCK_OUTSIDE_IN,
+        useValue: httpMockOutsideIn
+      },
+      {
+        provide: HTTP_MOCK_OUTSIDE_OUT,
+        useValue: httpMockOutsideOut
+      }
+    ]
+  }
+});
 
-export const Primary = TreeService.bind({});
-Primary.args = { dataSet: [ 'hello', 'world' ] };
+export const DefaultMocks = DefaultMockSource.bind({});
+
+export const EndToEndMocks = EndToEndMockSource.bind({});
