@@ -22,20 +22,20 @@ declare global {
   namespace Cypress {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
-      expectRequest(expect: (request: HttpRequest<unknown>) => boolean): Chainable<HttpRequest<unknown>>;
+      expectRequest(requestStoreToken?: string): Chainable<HttpRequest<unknown>>;
 
-      sendResponse(response: HttpEvent<unknown>): Chainable<HttpRequest<unknown>>;
+      sendResponse(response: HttpEvent<unknown>, requestStoreToken?: string): Chainable<Subject>;
     }
   }
 }
 
-Cypress.Commands.add('expectRequest', (expect: (request: HttpRequest<unknown>) => boolean) => {
-  cy.window().then(win => win.httpMockGlobalIn.pipe(
+Cypress.Commands.add('expectRequest', (requestStoreToken: string = 'httpMockLastRequest') => {
+  return cy.window().then(win => win.httpMockGlobalIn.pipe(
     take(1),
     tap((request: HttpRequest<unknown>) => {
-      Cypress.env('lastRequest', request);
+      Cypress.env(requestStoreToken, request);
     })
-  ).toPromise()).should('satisfy', expect);
+  ).toPromise());
 });
 
 Cypress.Commands.add('sendResponse', ({
@@ -44,8 +44,8 @@ Cypress.Commands.add('sendResponse', ({
   statusText,
   url,
   body
-}: HttpResponse<unknown>) => {
-  const request: HttpRequest<unknown> = Cypress.env('lastRequest');
+}: HttpResponse<unknown>,requestStoreToken: string = 'httpMockLastRequest') => {
+  const request: HttpRequest<unknown> = Cypress.env(requestStoreToken);
   cy.window().then(win => {
     const { ngZone, HttpResponse } = win.httpMockGlobalUtils;
     ngZone.run(() => {

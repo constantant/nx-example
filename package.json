@@ -9,7 +9,15 @@
     "app-two:start": "nx serve app-two",
     "build": "nx build",
     "test": "nx test",
-    "graph": "nx dep-graph --watch"
+    "graph": "nx dep-graph --watch",
+    "affected:apps": "nx affected:apps",
+    "affected:libs": "nx affected:libs",
+    "affected:build": "nx affected:build",
+    "affected:e2e": "nx affected:e2e",
+    "affected:test": "nx affected:test",
+    "affected:lint": "nx affected:lint",
+    "affected:dep-graph": "nx affected:dep-graph",
+    "affected": "nx affected"
   },
   "private": true,
   "dependencies": {
