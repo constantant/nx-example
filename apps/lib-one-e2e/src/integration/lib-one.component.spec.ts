@@ -5,26 +5,21 @@ describe('lib-one', () => {
   it('should add an item to the list successfully', () => {
     const items = [ '123', '456' ];
     const text = 'hello world';
-    cy.get('nx-example-lib-one').should('exist');
-
-    cy.get('nx-example-lib-one ul').children().should('have.length', 1);
-    cy.get('nx-example-lib-one ul li').last().should('have.text', 'Loading...');
-    cy.expectRequest(({ method }: HttpRequest<unknown>) => method === 'GET')
-      .sendResponse(new HttpResponse({ body: items }));
-    cy.get('nx-example-lib-one ul').children().should('have.length', 2);
-
-    cy.get('nx-example-lib-one input').type(text);
-    cy.get('nx-example-lib-one button').click();
-    cy.expectRequest(({ method, body }: HttpRequest<unknown>) => method === 'POST' && body === text)
-      .sendResponse(new HttpResponse({ body: { success: true } }));
-
-    cy.get('nx-example-lib-one ul').children().should('have.length', 3);
-    cy.get('nx-example-lib-one ul li').last().should('have.text', 'Loading...');
-
-    cy.expectRequest(({ method }: HttpRequest<unknown>) => method === 'GET')
-      .sendResponse(new HttpResponse({ body: [ ...items, text ] }));
-
-    cy.get('nx-example-lib-one ul').children().should('have.length', 3);
-    cy.get('nx-example-lib-one ul li').last().should('have.text', text);
+    cy.get('nx-example-lib-one').should('exist')
+      .expectRequest(({ method }: HttpRequest<unknown>) => method === 'GET')
+      .get('nx-example-lib-one ul').children().should('have.length', 1)
+      .get('nx-example-lib-one ul li').last().should('have.text', 'Loading...')
+      .sendResponse(new HttpResponse({ body: items }))
+      .get('nx-example-lib-one ul').children().should('have.length', 2)
+      .get('nx-example-lib-one input').type(text)
+      .get('nx-example-lib-one button').click()
+      .expectRequest(({ method, body }: HttpRequest<unknown>) => method === 'POST' && body === text)
+      .sendResponse(new HttpResponse({ body: { success: true } }))
+      .expectRequest(({ method }: HttpRequest<unknown>) => method === 'GET')
+      .get('nx-example-lib-one ul').children().should('have.length', 3)
+      .get('nx-example-lib-one ul li').last().should('have.text', 'Loading...')
+      .sendResponse(new HttpResponse({ body: [ ...items, text ] }))
+      .get('nx-example-lib-one ul').children().should('have.length', 3)
+      .get('nx-example-lib-one ul li').last().should('have.text', text);
   });
 });

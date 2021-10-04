@@ -9,7 +9,7 @@
 // ***********************************************
 
 import { HttpEvent, HttpRequest, HttpResponse } from '@angular/common/http';
-import { take } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 
 import { httpMockRequestIdHeaderKey } from './http-mock.interceptor';
 import { HttpMockGlobal } from './http-mock.types';
@@ -30,18 +30,23 @@ declare global {
 }
 
 Cypress.Commands.add('expectRequest', (expect: (request: HttpRequest<unknown>) => boolean) => {
-  return cy.window().then(win => win.httpMockGlobalIn
-    .pipe(take(1)).toPromise()).should('satisfy', expect);
+  cy.window().then(win => win.httpMockGlobalIn.pipe(
+    take(1),
+    tap((request: HttpRequest<unknown>) => {
+      Cypress.env('lastRequest', request);
+    })
+  ).toPromise()).should('satisfy', expect);
 });
 
-Cypress.Commands.add('sendResponse', { prevSubject: true }, (request: HttpRequest<unknown>, {
+Cypress.Commands.add('sendResponse', ({
   headers,
   status,
   statusText,
   url,
   body
 }: HttpResponse<unknown>) => {
-  return cy.window().then(win => {
+  const request: HttpRequest<unknown> = Cypress.env('lastRequest');
+  cy.window().then(win => {
     const { ngZone, HttpResponse } = win.httpMockGlobalUtils;
     ngZone.run(() => {
       const requestId = request.headers.get(httpMockRequestIdHeaderKey);
@@ -53,7 +58,6 @@ Cypress.Commands.add('sendResponse', { prevSubject: true }, (request: HttpReques
         url: url as string
       }));
     });
-    return Promise.resolve(request);
   });
 });
 
