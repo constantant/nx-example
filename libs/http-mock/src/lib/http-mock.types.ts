@@ -17,11 +17,11 @@ export interface HttpMockSettings {
   useGlobal?: boolean;
 }
 
-export interface HttpMockGlobal extends Window {
-  httpMockGlobalIn?: HttpMockOutsideIn;
-  httpMockGlobalOut?: HttpMockOutsideOut;
-  httpMockGlobalEmit?: (httpEvent: HttpEvent<unknown>) => void;
-  httpMockGlobalUtils?: {
+export interface HttpMockGlobal {
+  httpMockGlobalIn: HttpMockOutsideIn;
+  httpMockGlobalOut: HttpMockOutsideOut;
+  httpMockGlobalEmit: (httpEvent: HttpEvent<unknown>) => void;
+  httpMockGlobalUtils: {
     ngZone: NgZone,
     HttpRequest: {
       new(method: 'DELETE' | 'GET' | 'HEAD' | 'JSONP' | 'OPTIONS', url: string, init?: {

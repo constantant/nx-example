@@ -2,32 +2,29 @@ import { HttpRequest, HttpResponse } from '@angular/common/http';
 
 describe('lib-one', () => {
   beforeEach(() => cy.visit('/iframe.html?id=libonecomponent--end-to-end-mocks'));
-  it('should render the component', () => {
-    cy.get('nx-example-lib-one').should('exist');
-  });
-  it('should render the input', () => {
-    cy.get('nx-example-lib-one input').should('exist');
-  });
-  it('should have 2 items', () => {
-    cy.expectRequest(({ method }: HttpRequest<unknown>) => method === 'GET')
-      .sendResponse(new HttpResponse({ body: [ '123', '456' ] }));
-    cy.get('nx-example-lib-one ul').children().should('have.length', 2);
-  });
-  it('should add an item "hello world"', () => {
+  it('should add an item to the list successfully', () => {
+    const items = [ '123', '456' ];
     const text = 'hello world';
+    cy.get('nx-example-lib-one').should('exist');
 
+    cy.get('nx-example-lib-one ul').children().should('have.length', 1);
+    cy.get('nx-example-lib-one ul li').last().should('have.text', 'Loading...');
     cy.expectRequest(({ method }: HttpRequest<unknown>) => method === 'GET')
-      .sendResponse(new HttpResponse({ body: [ '1', '2' ] }));
+      .sendResponse(new HttpResponse({ body: items }));
+    cy.get('nx-example-lib-one ul').children().should('have.length', 2);
 
     cy.get('nx-example-lib-one input').type(text);
     cy.get('nx-example-lib-one button').click();
-
     cy.expectRequest(({ method, body }: HttpRequest<unknown>) => method === 'POST' && body === text)
       .sendResponse(new HttpResponse({ body: { success: true } }));
 
+    cy.get('nx-example-lib-one ul').children().should('have.length', 3);
+    cy.get('nx-example-lib-one ul li').last().should('have.text', 'Loading...');
+
     cy.expectRequest(({ method }: HttpRequest<unknown>) => method === 'GET')
-      .sendResponse(new HttpResponse({ body: [ '1', '2', text ] }));
+      .sendResponse(new HttpResponse({ body: [ ...items, text ] }));
 
     cy.get('nx-example-lib-one ul').children().should('have.length', 3);
+    cy.get('nx-example-lib-one ul li').last().should('have.text', text);
   });
 });

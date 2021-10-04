@@ -16,7 +16,7 @@ const getColor = () => colors[ colorIndex === 5 ? (colorIndex = 0) : ++colorInde
 export const httpMockRequestIdHeaderKey = 'x-mock-request-id';
 
 export const httpMockGlobalIn = (ngZone: NgZone): HttpMockOutsideIn => {
-  const httpMockGlobal = window as HttpMockGlobal;
+  const httpMockGlobal = window as unknown as HttpMockGlobal;
   if (!httpMockGlobal.httpMockGlobalIn) {
     httpMockGlobal.httpMockGlobalUtils = { ngZone, HttpRequest, HttpHeaders, HttpParams, HttpResponse };
     httpMockGlobal.httpMockGlobalIn = new ReplayQueueSubject<HttpRequest<unknown>>(1);
@@ -25,7 +25,7 @@ export const httpMockGlobalIn = (ngZone: NgZone): HttpMockOutsideIn => {
 };
 
 export const httpMockGlobalOut = (): HttpMockOutsideOut => {
-  const httpMockGlobal = window as HttpMockGlobal;
+  const httpMockGlobal = window as unknown as HttpMockGlobal;
   if (!httpMockGlobal.httpMockGlobalOut) {
     httpMockGlobal.httpMockGlobalOut = new Observable<HttpEvent<unknown>>(subscriber => {
       httpMockGlobal.httpMockGlobalEmit = (ev: HttpEvent<unknown>) => subscriber.next(ev);

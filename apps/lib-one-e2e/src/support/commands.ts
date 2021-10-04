@@ -8,40 +8,26 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 
-import { HttpMockGlobal } from '@nx-example/http-mock';
-import { HttpEvent, HttpRequest, HttpResponse } from '@angular/common/http';
-import { take } from 'rxjs/operators';
-
-declare global {
 // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace Cypress {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    interface Chainable<Subject> {
-      expectRequest(expect: (request: HttpRequest<unknown>) => boolean): Chainable<HttpRequest<unknown>>;
-
-      sendResponse(response: HttpEvent<unknown>): Chainable<HttpRequest<unknown>>;
-    }
+declare namespace Cypress {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface Chainable<Subject> {
+    login(email: string, password: string): void;
   }
 }
-
-Cypress.Commands.add('expectRequest', (expect: (request: HttpRequest<unknown>) => boolean) => {
-  return cy.window().then((win: HttpMockGlobal) => win.httpMockGlobalIn
-    .pipe(take(1)).toPromise()).should('satisfy', expect);
+//
+// -- This is a parent command --
+Cypress.Commands.add('login', (email, password) => {
+  console.log('Custom command example: Login', email, password);
 });
-
-Cypress.Commands.add('sendResponse', { prevSubject: true }, (request: HttpRequest<unknown>, {
-  headers,
-  status,
-  statusText,
-  url,
-  body
-}: HttpResponse<unknown>) => {
-  return cy.window().then((win: HttpMockGlobal) => {
-    const { ngZone, HttpResponse } = win.httpMockGlobalUtils;
-    ngZone.run(() => {
-      win.httpMockGlobalEmit(new HttpResponse().clone({ body, headers, status, statusText, url }));
-    });
-    return Promise.resolve(request);
-  });
-});
-
+//
+// -- This is a child command --
+// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
+//
+//
+// -- This is a dual command --
+// Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
+//
+//
+// -- This will overwrite an existing command --
+// Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
